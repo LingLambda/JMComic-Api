@@ -1,3 +1,4 @@
+import base64
 from pathlib import Path
 
 from jmcomic import create_option_by_file
@@ -39,7 +40,7 @@ observer = Observer()
 observer.schedule(cfgFileChangeHandler(observer), path=optionFile, recursive=False)
 observer.start()
 
-from flask import Flask, send_file, jsonify
+from flask import Flask, jsonify
 from waitress import serve
 
 from album_service import get_album_pdf_path
@@ -50,19 +51,21 @@ app = Flask(__name__)
 # 根据 jm_album_id 返回 pdf 文件
 @app.route('/get_pdf/<jm_album_id>', methods=['GET'])
 def get_pdf(jm_album_id):
-    path = get_album_pdf_path(jm_album_id, pdf_dir, pdf_pwd, opt)
+    path, name = get_album_pdf_path(jm_album_id, pdf_dir, pdf_pwd, opt)
     if path is None:
         return jsonify({
             "success": False,
             "message": "PDF 文件不存在"
         }), 500
-    else:
-        return send_file(
-            path,
-            as_attachment=True,
-            download_name=Path(path).name,
-            mimetype='application/pdf'
-        )
+    with open(path, "rb") as f:
+        encoded_pdf = base64.b64encode(f.read()).decode('utf-8')
+
+    return jsonify({
+        "success": True,
+        "message": "PDF 获取成功",
+        "name": name,
+        "data": encoded_pdf
+    })
 
 
 import os
@@ -71,7 +74,7 @@ import os
 # 根据 jm_album_id 获取 pdf 文件下载到本地，返回绝对路径
 @app.route('/get_pdf_path/<jm_album_id>', methods=['GET'])
 def get_pdf_path(jm_album_id):
-    path = get_album_pdf_path(jm_album_id, pdf_dir, pdf_pwd, opt)
+    path, name = get_album_pdf_path(jm_album_id, pdf_dir, pdf_pwd, opt)
     abspath = (os.path.abspath(path))
     if path is None:
         return jsonify({
@@ -81,8 +84,9 @@ def get_pdf_path(jm_album_id):
     else:
         return jsonify({
             "success": True,
-            "message": "ok",
-            "data": abspath
+            "message": "PDF 获取成功",
+            "data": abspath,
+            "name": name
         })
 
 
