@@ -1,0 +1,124 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "JMComic API",
+    "description": "JMComic PDF 下载和获取 API",
+    "version": "1.0.0"
+  },
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/get_pdf/{jm_album_id}": {
+      "get": {
+        "tags": [
+          "PDF操作"
+        ],
+        "summary": "获取 PDF 文件内容",
+        "description": "根据 jm_album_id 返回 base64 编码的 PDF 文件内容",
+        "parameters": [
+          {
+            "name": "jm_album_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "JM 漫画 ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取 PDF",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "string",
+                  "description": "Base64 编码的 PDF 内容"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "PDF 文件不存在",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_pdf_path/{jm_album_id}": {
+      "get": {
+        "tags": [
+          "PDF操作"
+        ],
+        "summary": "获取 PDF 文件路径",
+        "description": "根据 jm_album_id 获取 PDF 文件的本地绝对路径",
+        "parameters": [
+          {
+            "name": "jm_album_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "JM 漫画 ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取 PDF 路径",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "string",
+                  "description": "PDF 文件的绝对路径"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "PDF 文件不存在",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
