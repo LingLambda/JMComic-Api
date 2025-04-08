@@ -1,3 +1,5 @@
+> !!! 已停止维护，强烈建议使用 [FfmpegZZZ/JMComic-Api](https://github.com/FfmpegZZZ/JMComic-Api) !!!
+
 ## 使用方法(docker和直接运行二选一即可)
 
 ### 直接运行
